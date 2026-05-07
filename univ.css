@@ -1,0 +1,38 @@
+@font-face {
+    font-family: batman;
+    src: url("batmfa__.ttf");
+}
+body{
+    text-align: center;
+    color: white;
+    background-image: url("https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjdjNGU5ZWFlbjZpYzVnaTJwemN4a2phMGM2b253cnFrN2hvdWk3cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/5iNEfxu6rHLwkL1tHW/giphy.gif");
+    background-size: cover;
+}
+
+h1{
+     font-family:batman;
+     text-shadow: 3px 3px 5px crimson;
+}
+h1:hover{
+    color: cadetblue;
+}
+
+.but{
+    padding: 10px 25px;
+    background-color: whitesmoke;
+   
+    font-family: "Orbitron", sans-serif;
+}       
+
+.but:hover{
+    background-color: rgb(47, 65, 167);
+   
+    font-family: batman;
+    color: aqua;
+
+}   
+
+.cta{
+    color: aquamarine;
+    border-bottom: 3px solid white;
+}
