@@ -1,0 +1,46 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html,body{
+    background-color: rgb(48, 48, 48);
+    height: 100vh;
+}
+
+.box{
+    margin-top: 10%;
+    margin-left: 20%;
+}
+
+#labels{
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-style: bold;
+    color: blueviolet;
+    font-size: 40px;
+    margin: 30px 0px;
+    padding: 20px 4px;
+}
+
+#mytext{
+    margin: 25px 5px 10px 5px;
+    width: 80px;
+}
+button{
+    background-color: bisque;
+    padding: 5px 2px;
+    border-radius: 10px;
+    width: 80px;
+}
+
+#mysubmit{
+    margin: 0px 5px 0px 5px;
+}
+p{
+    margin: 20px 5px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 28px;
+    color: rgb(240, 196, 39);
+}
+
