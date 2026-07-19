@@ -6,11 +6,11 @@
     <title>Document</title>
     <script>
         let nums = [10, ,30, ,50];
-        for(let x in nums){
-            document.write(`index =${x}, value =${nums[x]}<br>`);
+        for(let x of nums){
+            document.write(`index =${x}, value =${x}<br>`);
         }
-        //for in loop always run only in values not in Undifined.
-        // always runs in Index not in Values.
+        //for of loop always run only in values and in Undifined.
+        // always runsin Values.
     </script>
 </head>
 <body>
