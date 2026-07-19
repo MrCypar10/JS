@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let curryr = 2026;
+        let a, age;
+        do{
+        a  = Number (prompt(`Enter your birth Year`));
+        age = curryr - a ;   
+        if(age<=0){
+            alert(`You Entred Wrong Year`);
+        }}
+        while(age<=0);
+        if(age>=18){
+            document.write(`Your age is ${age} and u can vote`);
+        }
+        else{
+            document.write(`Your Age is ${age} and u can't vote`)
+        }
+
+
+
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
