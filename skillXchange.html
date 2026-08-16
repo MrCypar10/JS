@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SkillSwap — Learn what you need. Teach what you know.</title>
+<meta name="description" content="SkillSwap connects people who want to learn with people who can teach — powered by community, reputation, and smart matching." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #FAF6EE;
+    --bg-soft: #F3EDDF;
+    --ink: #161A17;
+    --ink-soft: #3C423E;
+    --muted: #6B7068;
+    --line: #E5DEC9;
+    --card: #FFFFFF;
+    --primary: #0E5B3F;
+    --primary-2: #167E54;
+    --primary-deep: #063524;
+    --accent: #E2742A;
+    --accent-2: #F4A85C;
+    --gold: #C99A2E;
+    --berry: #B23A48;
+    --plum: #5B3A89;
+  }
+  * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+  .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Texture / paper grain */
+  .paper {
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(20,30,20,0.035) 1px, transparent 0);
+    background-size: 22px 22px;
+  }
+
+  /* Hero gradient mesh */
+  .hero-mesh {
+    background:
+      radial-gradient(60% 50% at 15% 20%, rgba(22,126,84,0.18) 0%, transparent 60%),
+      radial-gradient(50% 40% at 85% 15%, rgba(226,116,42,0.16) 0%, transparent 60%),
+      radial-gradient(40% 30% at 75% 90%, rgba(91,58,137,0.10) 0%, transparent 60%),
+      radial-gradient(40% 30% at 25% 95%, rgba(201,154,46,0.10) 0%, transparent 60%);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-soft); }
+  ::-webkit-scrollbar-thumb { background: #C9C0A8; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+  /* Selection */
+  ::selection { background: var(--primary); color: #fff; }
+
+  /* Animated underline */
+  .ulink { position: relative; }
+  .ulink::after {
+    content: ''; position: absolute; left: 0; bottom: -2px;
+    width: 0; height: 1.5px; background: currentColor;
+    transition: width 0.35s cubic-bezier(.22,1,.36,1);
+  }
+  .ulink:hover::after { width: 100%; }
+
+  /* Marquee */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .marquee-track { animation: marquee 40s linear infinite; }
+  .marquee-track:hover { animation-play-state: paused; }
+
+  /* Float */
+  @keyframes float1 { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(-2deg); } }
+  @keyframes float2 { 0%,100% { transform: translateY(0) rotate(2deg); } 50% { transform: translateY(-18px) rotate(2deg); } }
+  .float-1 { animation: float1 6s ease-in-out infinite; }
+  .float-2 { animation: float2 7s ease-in-out infinite; }
+
+  /* Pulse ring */
+  @keyframes pulse-ring {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  .pulse-ring::before, .pulse-ring::after {
+    content: ''; position: absolute; inset: 0; border-radius: 9999px;
+    border: 2px solid var(--primary-2);
+    animation: pulse-ring 2.5s cubic-bezier(0.0,0.0,0.2,1) infinite;
+  }
+  .pulse-ring::after { animation-delay: 1.25s; }
+
+  /* Connection line draw */
+  @keyframes drawLine {
+    from { stroke-dashoffset: 1000; }
+    to { stroke-dashoffset: 0; }
+  }
+  .draw-line {
+    stroke-dasharray: 1000;
+    animation: drawLine 2.5s cubic-bezier(.22,1,.36,1) forwards;
+  }
+
+  /* Card tilt */
+  .tilt { transition: transform 0.4s cubic-bezier(.22,1,.36,1); transform-style: preserve-3d; }
+
+  /* Shimmer for skill chip */
+  .chip {
+    position: relative;
+    transition: all 0.25s ease;
+  }
+  .chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -8px rgba(14,91,63,0.35);
+  }
+  .chip-shine::before {
+    content: '';
+    position: absolute; top: 0; left: -100%;
+    width: 50%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+    transition: left 0.6s ease;
+  }
+  .chip-shine:hover::before { left: 150%; }
+
+  /* Step number */
+  .step-num {
+    font-feature-settings: "ss01";
+  }
+
+  /* Reveal on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.9s cubic-bezier(.22,1,.36,1), transform 0.9s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* Stagger children */
+  .stagger > * { opacity: 0; transform: translateY(20px); transition: all 0.7s cubic-bezier(.22,1,.36,1); }
+  .stagger.in > * { opacity: 1; transform: translateY(0); }
+  .stagger.in > *:nth-child(1) { transition-delay: 0.05s; }
+  .stagger.in > *:nth-child(2) { transition-delay: 0.15s; }
+  .stagger.in > *:nth-child(3) { transition-delay: 0.25s; }
+  .stagger.in > *:nth-child(4) { transition-delay: 0.35s; }
+  .stagger.in > *:nth-child(5) { transition-delay: 0.45s; }
+  .stagger.in > *:nth-child(6) { transition-delay: 0.55s; }
+
+  /* Glow */
+  .glow-emerald { box-shadow: 0 0 0 1px rgba(14,91,63,0.15), 0 20px 60px -20px rgba(14,91,63,0.4); }
+  .glow-coral { box-shadow: 0 0 0 1px rgba(226,116,42,0.18), 0 20px 60px -20px rgba(226,116,42,0.45); }
+
+  /* Credit flow animation */
+  @keyframes flow {
+    0% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -40; }
+  }
+  .flow-line {
+    stroke-dasharray: 8 6;
+    animation: flow 1.2s linear infinite;
+  }
+
+  /* Tab indicator */
+  .tab-btn { transition: all 0.3s ease; }
+  .tab-btn[aria-selected="true"] {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* Dot grid bg */
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(14,91,63,0.18) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
+  /* Match card subtle gradient */
+  .match-card {
+    background:
+      linear-gradient(135deg, #ffffff 0%, #fdfaf2 100%);
+  }
+  .match-card-reciprocal {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f9f3 100%);
+    box-shadow: 0 0 0 1px rgba(14,91,63,0.2), 0 20px 50px -20px rgba(14,91,63,0.3);
+  }
+
+  /* Star rating */
+  .star-fill { color: var(--gold); }
+
+  /* Nav blur */
+  .nav-blur {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background: rgba(250,246,238,0.78);
+  }
+
+  /* Hover lift */
+  .lift { transition: transform 0.35s cubic-bezier(.22,1,.36,1), box-shadow 0.35s; }
+  .lift:hover { transform: translateY(-4px); }
+
+  /* Big number */
+  .big-num {
+    font-family: 'Fraunces', serif;
+    font-feature-settings: "ss01", "tnum";
+    letter-spacing: -0.04em;
+  }
+
+  /* Dotted divider */
+  .dotted-x {
+    background-image: linear-gradient(to right, var(--line) 50%, transparent 50%);
+    background-size: 8px 1px;
+    background-repeat: repeat-x;
+    background-position: center;
+    height: 1px;
+  }
+
+  /* Avatar gradients */
+  .av-1 { background: linear-gradient(135deg, #167E54, #0E5B3F); }
+  .av-2 { background: linear-gradient(135deg, #E2742A, #B23A48); }
+  .av-3 { background: linear-gradient(135deg, #5B3A89, #3A1F5B); }
+  .av-4 { background: linear-gradient(135deg, #C99A2E, #8B6914); }
+  .av-5 { background: linear-gradient(135deg, #2A5C8A, #0F3A5C); }
+
+  /* Hide scrollbar on horizontal scroll containers */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Mobile menu */
+  .mobile-menu { transform: translateX(100%); transition: transform 0.4s cubic-bezier(.22,1,.36,1); }
+  .mobile-menu.open { transform: translateX(0); }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#FAF6EE',
+          bgSoft: '#F3EDDF',
+          ink: '#161A17',
+          inkSoft: '#3C423E',
+          muted: '#6B7068',
+          line: '#E5DEC9',
+          card: '#FFFFFF',
+          primary: '#0E5B3F',
+          primary2: '#167E54',
+          primaryDeep: '#063524',
+          accent: '#E2742A',
+          accent2: '#F4A85C',
+          gold: '#C99A2E',
+          berry: '#B23A48',
+          plum: '#5B3A89',
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          sans: ['Plus Jakarta Sans', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
+</head>
+<body class="paper">
+
+<!-- ============ NAVIGATION ============ -->
+<nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-line/60">
+  <div class="max-w-7xl mx-auto px-5 md:px-8 h-16 md:h-18 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2.5 group">
+      <div class="relative w-9 h-9 rounded-xl bg-ink flex items-center justify-center overflow-hidden">
+        <div class="absolute w-4 h-4 rounded-full bg-accent -translate-x-1 -translate-y-1"></div>
+        <div class="absolute w-4 h-4 rounded-full bg-primary2 translate-x-1.5 translate-y-1.5"></div>
+        <div class="relative w-2.5 h-2.5 rounded-full bg-bg"></div>
+      </div>
+      <span class="font-display text-xl font-semibold tracking-tight">SkillSwap</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-inkSoft">
+      <a href="#how" class="ulink hover:text-ink transition">How it works</a>
+      <a href="#discover" class="ulink hover:text-ink transition">Discover</a>
+      <a href="#credits" class="ulink hover:text-ink transition">Credits</a>
+      <a href="#trust" class="ulink hover:text-ink transition">Trust</a>
+      <a href="#community" class="ulink hover:text-ink transition">Community</a>
+    </div>
+
+    <div class="hidden md:flex items-center gap-3">
+      <a href="#" class="text-sm font-medium text-inkSoft hover:text-ink px-3 py-2 transition">Sign in</a>
+      <a href="#" class="text-sm font-semibold bg-ink text-bg px-4 py-2.5 rounded-full hover:bg-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 flex items-center gap-2">
+        Join SkillSwap
+        <i class="fa-solid fa-arrow-right text-xs"></i>
+      </a>
+    </div>
+
+    <button id="mobileToggle" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-bgSoft" aria-label="Open menu">
+      <i class="fa-solid fa-bars text-ink"></i>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="mobile-menu md:hidden fixed inset-0 top-16 bg-bg z-40 flex flex-col p-6">
+    <div class="flex flex-col gap-1 text-lg font-medium">
+      <a href="#how" class="py-3 border-b border-line">How it works</a>
+      <a href="#discover" class="py-3 border-b border-line">Discover</a>
+      <a href="#credits" class="py-3 border-b border-line">Credits</a>
+      <a href="#trust" class="py-3 border-b border-line">Trust</a>
+      <a href="#community" class="py-3 border-b border-line">Community</a>
+    </div>
+    <div class="mt-auto flex flex-col gap-3">
+      <a href="#" class="text-center py-3 rounded-full border border-ink/20 font-medium">Sign in</a>
+      <a href="#" class="text-center py-3 rounded-full bg-ink text-bg font-semibold">Join SkillSwap</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero-mesh pt-28 md:pt-32 pb-16 md:pb-24 relative overflow-hidden">
+
+  <!-- Floating background shapes -->
+  <div class="absolute top-20 left-10 w-72 h-72 rounded-full bg-primary2/10 blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-accent/10 blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+    <div class="grid lg:grid-cols-12 gap-10 lg:gap-6 items-center">
+
+      <!-- Left: Copy -->
+      <div class="lg:col-span-7 relative z-10">
+        <div class="inline-flex items-center gap-2 bg-card border border-line rounded-full pl-1 pr-4 py-1 mb-7 shadow-sm">
+          <span class="bg-primary text-bg text-xs font-semibold px-2.5 py-1 rounded-full">New</span>
+          <span class="text-xs text-inkSoft font-medium">Credit-based learning, no money required</span>
+        </div>
+
+        <h1 class="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-light leading-[0.95] tracking-tight text-ink">
+          Learn what you <span class="italic font-normal text-primary">need.</span><br>
+          Teach what you <span class="italic font-normal text-accent">know.</span>
+        </h1>
+
+        <p class="mt-7 text-lg md:text-xl text-inkSoft leading-relaxed max-w-xl">
+          SkillSwap connects people who want to learn with people who can teach — powered by community, reputation, and intelligent matching. Trade your skills, earn credits, grow together.
+        </p>
+
+        <div class="mt-9 flex flex-col sm:flex-row gap-3">
+          <a href="#" class="group bg-ink text-bg px-7 py-4 rounded-full font-semibold flex items-center justify-center gap-2.5 hover:bg-primary transition-all duration-300 hover:shadow-xl hover:shadow-primary/30">
+            <i class="fa-solid fa-compass"></i>
+            Find someone to learn from
+            <i class="fa-solid fa-arrow-right text-sm transition-transform group-hover:translate-x-1"></i>
+          </a>
+          <a href="#" class="border border-ink/20 text-ink px-7 py-4 rounded-full font-semibold flex items-center justify-center gap-2.5 hover:border-ink hover:bg-ink/5 transition">
+            <i class="fa-solid fa-share-nodes"></i>
+            Share your skills
+          </a>
+        </div>
+
+        <!-- Trust mini stats -->
+        <div class="mt-12 grid grid-cols-3 gap-4 md:gap-8 max-w-lg">
+          <div>
+            <div class="big-num text-3xl md:text-4xl font-medium text-ink" data-count="1240">0</div>
+            <div class="text-xs md:text-sm text-muted mt-1">Skills in the network</div>
+          </div>
+          <div>
+            <div class="big-num text-3xl md:text-4xl font-medium text-ink" data-count="8600">0</div>
+            <div class="text-xs md:text-sm text-muted mt-1">Verified teachers</div>
+          </div>
+          <div>
+            <div class="big-num text-3xl md:text-4xl font-medium text-ink" data-count="98">0</div>
+            <div class="text-xs md:text-sm text-muted mt-1">Avg. match score</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Visual exchange -->
+      <div class="lg:col-span-5 relative h-[460px] md:h-[540px]">
+
+        <!-- SVG connection line -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 400 540" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="connGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#167E54"/>
+              <stop offset="50%" stop-color="#E2742A"/>
+              <stop offset="100%" stop-color="#5B3A89"/>
+            </linearGradient>
+          </defs>
+          <path class="draw-line" d="M 80 130 Q 200 200, 320 410" fill="none" stroke="url(#connGrad)" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Animated dot along path -->
+          <circle r="5" fill="#E2742A">
+            <animateMotion dur="3s" repeatCount="indefinite" path="M 80 130 Q 200 200, 320 410"/>
+          </circle>
+        </svg>
+
+        <!-- Match indicator center -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+          <div class="relative">
+            <div class="pulse-ring absolute inset-0 rounded-full"></div>
+            <div class="relative w-20 h-20 rounded-full bg-ink text-bg flex flex-col items-center justify-center shadow-2xl">
+              <div class="text-[10px] uppercase tracking-wider opacity-70">Match</div>
+              <div class="big-num text-2xl font-semibold text-accent2">98%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card A (Alice - top left) -->
+        <div class="absolute top-2 left-0 w-64 float-1">
+          <div class="match-card glow-emerald rounded-2xl p-4 border border-line">
+            <div class="flex items-center gap-3">
+              <div class="av-1 w-11 h-11 rounded-full flex items-center justify-center text-bg font-semibold">A</div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-sm text-ink truncate">Alice Chen</div>
+                <div class="text-xs text-muted truncate">Backend Engineer</div>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-primary2"></div>
+            </div>
+            <div class="mt-4 space-y-2">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-muted mb-1">Teaches</div>
+                <div class="flex flex-wrap gap-1.5">
+                  <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Python</span>
+                  <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">SQL</span>
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-muted mb-1">Wants</div>
+                <div class="flex flex-wrap gap-1.5">
+                  <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">UI/UX Design</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-line flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1">
+                <i class="fa-solid fa-star star-fill text-[10px]"></i>
+                <span class="font-semibold text-ink">4.9</span>
+                <span class="text-muted">· 32 sessions</span>
+              </div>
+              <span class="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-semibold">VERIFIED</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card B (Bob - bottom right) -->
+        <div class="absolute bottom-2 right-0 w-64 float-2">
+          <div class="match-card glow-coral rounded-2xl p-4 border border-line">
+            <div class="flex items-center gap-3">
+              <div class="av-2 w-11 h-11 rounded-full flex items-center justify-center text-bg font-semibold">B</div>
+              <div class="flex-1 min-w-0">
+                <div class="font-semibold text-sm text-ink truncate">Bob Okafor</div>
+                <div class="text-xs text-muted truncate">Product Designer</div>
+              </div>
+              <div class="w-2 h-2 rounded-full bg-primary2"></div>
+            </div>
+            <div class="mt-4 space-y-2">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-muted mb-1">Teaches</div>
+                <div class="flex flex-wrap gap-1.5">
+                  <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">UI/UX</span>
+                  <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Figma</span>
+                </div>
+              </div>
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-muted mb-1">Wants</div>
+                <div class="flex flex-wrap gap-1.5">
+                  <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">Python</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-line flex items-center justify-between text-xs">
+              <div class="flex items-center gap-1">
+                <i class="fa-solid fa-star star-fill text-[10px]"></i>
+                <span class="font-semibold text-ink">4.8</span>
+                <span class="text-muted">· 18 sessions</span>
+              </div>
+              <span class="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-semibold">VERIFIED</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Skill marquee -->
+  <div class="mt-20 md:mt-28 relative overflow-hidden border-y border-line bg-bgSoft/40 py-5">
+    <div class="flex gap-3 marquee-track w-max">
+      <!-- set 1 -->
+      <div class="flex gap-3 px-1.5">
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Python</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">UI/UX Design</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Public Speaking</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Excel & Sheets</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Photography</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Digital Marketing</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Guitar</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">AI & Machine Learning</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Career Coaching</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Video Editing</span>
+      </div>
+      <!-- set 2 (duplicate for seamless loop) -->
+      <div class="flex gap-3 px-1.5">
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Python</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">UI/UX Design</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Public Speaking</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Excel & Sheets</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Photography</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Digital Marketing</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Guitar</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">AI & Machine Learning</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Career Coaching</span>
+        <span class="chip chip-shine relative bg-card border border-line px-4 py-2 rounded-full text-sm font-medium text-ink">Video Editing</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section id="how" class="py-20 md:py-32 relative">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+
+    <div class="grid lg:grid-cols-12 gap-10 mb-14 md:mb-20">
+      <div class="lg:col-span-5">
+        <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4 reveal">How it works</div>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] tracking-tight text-ink reveal">
+          A <span class="italic">simple loop</span> for real learning.
+        </h2>
+      </div>
+      <div class="lg:col-span-6 lg:col-start-7 flex items-end">
+        <p class="text-lg text-inkSoft leading-relaxed reveal">
+          SkillSwap is built on reciprocity. You don't pay to learn — you trade. Every minute you teach earns credits you can spend on any skill, from anyone, anywhere. The system handles matching, scheduling, and trust so you can focus on what matters: growing together.
+        </p>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 stagger">
+
+      <div class="bg-card border border-line rounded-3xl p-7 lift relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 dot-grid opacity-50"></div>
+        <div class="big-num step-num text-5xl font-light text-primary mb-6">01</div>
+        <h3 class="font-display text-xl font-medium mb-2">Build your profile</h3>
+        <p class="text-sm text-inkSoft leading-relaxed">Add skills you can teach and skills you want to learn. Set proficiency, availability, and preferred session format.</p>
+        <div class="mt-5 flex flex-wrap gap-1.5">
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Skills</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Availability</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Languages</span>
+        </div>
+      </div>
+
+      <div class="bg-card border border-line rounded-3xl p-7 lift relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 dot-grid opacity-50"></div>
+        <div class="big-num step-num text-5xl font-light text-accent mb-6">02</div>
+        <h3 class="font-display text-xl font-medium mb-2">Find your match</h3>
+        <p class="text-sm text-inkSoft leading-relaxed">Get AI-assisted recommendations based on skills, availability, timezone, and learning goals. Filter by what matters to you.</p>
+        <div class="mt-5 flex flex-wrap gap-1.5">
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Reciprocal</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Credit-based</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Group</span>
+        </div>
+      </div>
+
+      <div class="bg-card border border-line rounded-3xl p-7 lift relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 dot-grid opacity-50"></div>
+        <div class="big-num step-num text-5xl font-light text-plum mb-6">03</div>
+        <h3 class="font-display text-xl font-medium mb-2">Learn and teach</h3>
+        <p class="text-sm text-inkSoft leading-relaxed">Schedule a session, chat in real time, share resources, and conduct video calls — all in one place. Built-in tools for collaboration.</p>
+        <div class="mt-5 flex flex-wrap gap-1.5">
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Video</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Chat</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Resources</span>
+        </div>
+      </div>
+
+      <div class="bg-card border border-line rounded-3xl p-7 lift relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-24 h-24 dot-grid opacity-50"></div>
+        <div class="big-num step-num text-5xl font-light text-gold mb-6">04</div>
+        <h3 class="font-display text-xl font-medium mb-2">Earn reputation & credits</h3>
+        <p class="text-sm text-inkSoft leading-relaxed">Complete sessions, earn Skill Credits, build reputation through reviews, and unlock badges as you grow.</p>
+        <div class="mt-5 flex flex-wrap gap-1.5">
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Credits</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Reviews</span>
+          <span class="text-xs bg-bgSoft text-inkSoft px-2 py-1 rounded-full">Badges</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ DISCOVER / MATCH PREVIEW ============ -->
+<section id="discover" class="py-20 md:py-32 bg-bgSoft/60 border-y border-line relative overflow-hidden">
+  <div class="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-accent/5 blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+
+    <div class="text-center max-w-3xl mx-auto mb-14 md:mb-20">
+      <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4 reveal">Discovery</div>
+      <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] tracking-tight text-ink reveal">
+        Find the <span class="italic">right person</span>, not just any person.
+      </h2>
+      <p class="mt-6 text-lg text-inkSoft reveal">
+        Our matching engine blends semantic search, structured filters, availability overlap, and reputation signals — then explains exactly why each match makes sense.
+      </p>
+    </div>
+
+    <!-- Search bar mock -->
+    <div class="max-w-3xl mx-auto mb-10 reveal">
+      <div class="bg-card border border-line rounded-2xl p-2 flex items-center gap-2 shadow-sm">
+        <div class="flex-1 flex items-center gap-3 px-3">
+          <i class="fa-solid fa-magnifying-glass text-muted"></i>
+          <input type="text" value="Python" class="w-full bg-transparent outline-none text-ink placeholder:text-muted py-3" readonly>
+        </div>
+        <button class="bg-ink text-bg px-5 py-3 rounded-xl text-sm font-semibold hover:bg-primary transition">Search</button>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs">
+        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">Verified only</span>
+        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">Rating 4.5+</span>
+        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">English</span>
+        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">Evenings</span>
+        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full font-medium">Timezone: Any</span>
+      </div>
+    </div>
+
+    <!-- Match explanation banner -->
+    <div class="max-w-5xl mx-auto mb-10 reveal">
+      <div class="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-2xl p-5 flex items-start gap-4">
+        <div class="w-10 h-10 rounded-xl bg-primary text-bg flex items-center justify-center flex-shrink-0">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <div class="text-sm font-semibold text-ink mb-1">Why we recommended these matches</div>
+          <div class="text-sm text-inkSoft">Great match because they teach Python at an advanced level, want to learn Figma, and are available during your preferred evening hours.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Match cards grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 stagger">
+
+      <!-- Match card 1 - Reciprocal -->
+      <div class="match-card-reciprocal rounded-3xl p-6 lift relative">
+        <div class="absolute top-4 right-4 bg-primary text-bg text-xs font-bold px-2.5 py-1 rounded-full">98% MATCH</div>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="av-1 w-14 h-14 rounded-full flex items-center justify-center text-bg font-semibold text-lg">PS</div>
+          <div>
+            <div class="font-semibold text-ink">Priya Sharma</div>
+            <div class="text-xs text-muted">Product Designer · Bangalore</div>
+          </div>
+        </div>
+        <div class="space-y-3 mb-5">
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-muted mb-1.5">Teaches</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Figma</span>
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">UX Research</span>
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Design Systems</span>
+            </div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-muted mb-1.5">Wants to learn</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">Python</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs mb-5">
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star star-fill"></i>
+            <span class="font-semibold text-ink">4.9</span>
+            <span class="text-muted">· 42 sessions</span>
+          </div>
+          <span class="bg-primary text-bg px-2 py-0.5 rounded font-semibold">VERIFIED</span>
+        </div>
+        <div class="text-xs text-muted mb-4 flex items-center gap-2">
+          <i class="fa-regular fa-clock"></i>
+          Available Tue/Thu evenings
+        </div>
+        <button class="w-full bg-ink text-bg py-3 rounded-xl text-sm font-semibold hover:bg-primary transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-arrow-right-arrow-left text-xs"></i>
+          Ask to swap skills
+        </button>
+      </div>
+
+      <!-- Match card 2 -->
+      <div class="match-card rounded-3xl p-6 border border-line lift relative">
+        <div class="absolute top-4 right-4 bg-ink/80 text-bg text-xs font-bold px-2.5 py-1 rounded-full">91% MATCH</div>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="av-3 w-14 h-14 rounded-full flex items-center justify-center text-bg font-semibold text-lg">MK</div>
+          <div>
+            <div class="font-semibold text-ink">Marcus Kim</div>
+            <div class="text-xs text-muted">Data Scientist · Berlin</div>
+          </div>
+        </div>
+        <div class="space-y-3 mb-5">
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-muted mb-1.5">Teaches</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Python</span>
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Pandas</span>
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Statistics</span>
+            </div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-muted mb-1.5">Wants to learn</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">Spanish</span>
+              <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">Public Speaking</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs mb-5">
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star star-fill"></i>
+            <span class="font-semibold text-ink">4.8</span>
+            <span class="text-muted">· 67 sessions</span>
+          </div>
+          <span class="bg-primary text-bg px-2 py-0.5 rounded font-semibold">VERIFIED</span>
+        </div>
+        <div class="text-xs text-muted mb-4 flex items-center gap-2">
+          <i class="fa-regular fa-clock"></i>
+          Available weekday mornings
+        </div>
+        <button class="w-full bg-ink text-bg py-3 rounded-xl text-sm font-semibold hover:bg-primary transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-coins text-xs"></i>
+          Book with credits
+        </button>
+      </div>
+
+      <!-- Match card 3 -->
+      <div class="match-card rounded-3xl p-6 border border-line lift relative">
+        <div class="absolute top-4 right-4 bg-ink/80 text-bg text-xs font-bold px-2.5 py-1 rounded-full">87% MATCH</div>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="av-4 w-14 h-14 rounded-full flex items-center justify-center text-bg font-semibold text-lg">RT</div>
+          <div>
+            <div class="font-semibold text-ink">Rina Tanaka</div>
+            <div class="text-xs text-muted">ML Engineer · Tokyo</div>
+          </div>
+        </div>
+        <div class="space-y-3 mb-5">
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-muted mb-1.5">Teaches</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">Python</span>
+              <span class="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PyTorch</span>
+            </div>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase tracking-wider text-muted mb-1.5">Wants to learn</div>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">Photography</span>
+              <span class="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded-full font-medium">Lightroom</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs mb-5">
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star star-fill"></i>
+            <span class="font-semibold text-ink">5.0</span>
+            <span class="text-muted">· 24 sessions</span>
+          </div>
+          <span class="bg-primary text-bg px-2 py-0.5 rounded font-semibold">VERIFIED</span>
+        </div>
+        <div class="text-xs text-muted mb-4 flex items-center gap-2">
+          <i class="fa-regular fa-clock"></i>
+          Available weekends
+        </div>
+        <button class="w-full bg-ink text-bg py-3 rounded-xl text-sm font-semibold hover:bg-primary transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-coins text-xs"></i>
+          Book with credits
+        </button>
+      </div>
+
+    </div>
+
+    <div class="text-center mt-10 reveal">
+      <a href="#" class="inline-flex items-center gap-2 text-ink font-semibold ulink">
+        See all 247 matches
+        <i class="fa-solid fa-arrow-right text-sm"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREDIT ECONOMY ============ -->
+<section id="credits" class="py-20 md:py-32 relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+
+    <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+      <!-- Left: explanation -->
+      <div class="lg:col-span-5">
+        <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4 reveal">Credit economy</div>
+        <h2 class="font-display text-4xl md:text-5xl font-light leading-[1.05] tracking-tight text-ink reveal">
+          Time is the only <span class="italic">currency</span> that matters.
+        </h2>
+        <p class="mt-6 text-lg text-inkSoft leading-relaxed reveal">
+          Skill Credits represent time contributed to the community. Earn them by helping others. Spend them to learn from anyone. No money. No speculation. Just reciprocity.
+        </p>
+
+        <div class="mt-8 space-y-4 reveal">
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-ink mb-0.5">1 teaching minute = 1 credit</div>
+              <div class="text-sm text-muted">A 60-minute session earns 60 credits. Configurable by community admins.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-shield-halved text-sm"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-ink mb-0.5">Ledger-based & transactional</div>
+              <div class="text-sm text-muted">Every credit movement is recorded, idempotent, and reversible in disputes.</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-10 h-10 rounded-xl bg-plum/10 text-plum flex items-center justify-center flex-shrink-0">
+              <i class="fa-solid fa-globe text-sm"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-ink mb-0.5">Spend across the network</div>
+              <div class="text-sm text-muted">Teach Python to Bob, spend those credits learning guitar from Charlie.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: wallet visualization -->
+      <div class="lg:col-span-7 relative">
+
+        <!-- Wallet card -->
+        <div class="bg-gradient-to-br from-ink to-primaryDeep rounded-3xl p-7 md:p-9 text-bg shadow-2xl relative overflow-hidden reveal">
+          <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full bg-primary2/30 blur-3xl"></div>
+          <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full bg-accent/20 blur-3xl"></div>
+
+          <div class="relative">
+            <div class="flex items-center justify-between mb-8">
+              <div>
+                <div class="text-xs uppercase tracking-wider opacity-70 mb-1">Your wallet</div>
+                <div class="text-sm font-medium opacity-90">Skill Credits balance</div>
+              </div>
+              <div class="w-10 h-10 rounded-xl bg-bg/10 flex items-center justify-center">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+            </div>
+
+            <div class="flex items-end gap-3 mb-2">
+              <div class="big-num text-7xl md:text-8xl font-light text-accent2" data-count="120">0</div>
+              <div class="text-sm opacity-70 mb-4">credits available</div>
+            </div>
+            <div class="flex flex-wrap gap-4 text-xs opacity-80 mb-8">
+              <span>Lifetime earned: <span class="font-semibold text-accent2">+340</span></span>
+              <span>Lifetime spent: <span class="font-semibold">-220</span></span>
+            </div>
+
+            <!-- Flow diagram -->
+            <div class="bg-bg/5 rounded-2xl p-5 border border-bg/10">
+              <div class="text-xs uppercase tracking-wider opacity-70 mb-4">Recent activity</div>
+
+              <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                  <div class="av-2 w-8 h-8 rounded-full flex items-center justify-center text-bg text-xs font-semibold">B</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium">Taught Python to Bob O.</div>
+                    <div class="text-xs opacity-60">60-min session · Today</div>
+                  </div>
+                  <div class="font-semibold text-accent2">+60</div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="av-4 w-8 h-8 rounded-full flex items-center justify-center text-bg text-xs font-semibold">R</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium">Learned Figma from Rina T.</div>
+                    <div class="text-xs opacity-60">45-min session · Yesterday</div>
+                  </div>
+                  <div class="font-semibold">-45</div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-bg/10 flex items-center justify-center text-bg text-xs">
+                    <i class="fa-solid fa-gift"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium">Welcome bonus</div>
+                    <div class="text-xs opacity-60">When you joined SkillSwap</div>
+                  </div>
+                  <div class="font-semibold text-accent2">+100</div>
+                </div>
+              </div>
+
+              <button class="mt-5 w-full bg-bg/10 hover:bg-bg/20 transition py-2.5 rounded-xl text-xs font-semibold">View full history</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floating mini cards -->
+        <div class="absolute -top-6 -right-2 md:-right-6 bg-card border border-line rounded-2xl p-4 shadow-xl float-1 w-44 hidden md:block">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-2 h-2 rounded-full bg-primary2"></div>
+            <div class="text-[10px] uppercase tracking-wider text-muted">Live</div>
+          </div>
+          <div class="text-2xl font-display font-medium text-ink">+60</div>
+          <div class="text-xs text-muted">credits earned</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST & SAFETY ============ -->
+<section id="trust" class="py-20 md:py-32 bg-ink text-bg relative overflow-hidden">
+  <div class="absolute top-0 left-0 w-full h-full opacity-[0.03]" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 28px 28px;"></div>
+  <div class="absolute top-1/4 -left-40 w-96 h-96 rounded-full bg-primary2/20 blur-3xl"></div>
+  <div class="absolute bottom-1/4 -right-40 w-96 h-96 rounded-full bg-accent/20 blur-3xl"></div>
+
+  <div class="max-w-7xl mx-auto px-5 md:px-8 relative">
+
+    <div class="grid lg:grid-cols-12 gap-12 mb-16">
+      <div class="lg:col-span-6">
+        <div class="text-xs uppercase tracking-[0.2em] text-accent2 font-semibold mb-4 reveal">Trust & safety</div>
+        <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] tracking-tight reveal">
+          Built on <span class="italic">reputation</span>, not assumptions.
+        </h2>
+      </div>
+      <div class="lg:col-span-5 lg:col-start-8 flex items-end">
+        <p class="text-lg text-bg/70 leading-relaxed reveal">
+          Every member builds a track record. Skills get verified through evidence, assessments, and peer endorsements. Every transaction is logged, every review is moderated, every signal matters.
+        </p>
+      </div>
+    </div>
+
+    <!-- Trust grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-bg/10 rounded-3xl overflow-hidden stagger">
+
+      <div class="bg-ink p-7 hover:bg-primaryDeep transition group">
+        <div class="w-12 h-12 rounded-2xl bg-primary2/20 text-accent2 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+          <i class="fa-solid fa-shield-check text-lg"></i>
+        </div>
+        <h3 class="font-display text-xl font-medium mb-2">Multi-layer verification</h3>
+        <p class="text-sm text-bg/60 leading-relaxed">Self-reported, community-verified, evidence-verified, assessment-verified, and organization-verified levels — each clearly displayed.</p>
+      </div>
+
+      <div class="bg-ink p-7 hover:bg-primaryDeep transition group">
+        <div class="w-12 h-12 rounded-2xl bg-primary2/20 text-accent2 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+          <i class="fa-solid fa-file-certificate text-lg"></i>
+        </div>
+        <h3 class="font-display text-xl font-medium mb-2">Evidence portfolios</h3>
+        <p class="text-sm text-bg/60 leading-relaxed">Upload certificates, projects, portfolios, and peer endorsements. Admins review with full audit history.</p>
+      </div>
+
+      <div class="bg-ink p-7 hover:bg-primaryDeep transition group">
+        <div class="w-12 h-12 rounded-2xl bg-primary2/20 text-accent2 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+          <i class="fa-solid fa-star text-lg"></i>
+        </div>
+        <h3 class="font-display text-xl font-medium mb-2">Multi-dimensional ratings</h3>
+        <p class="text-sm text-bg/60 leading-relaxed">Communication, knowledge, reliability, and would-recommend. Not a single vanity number.</p>
+      </div>
+
+      <div class="bg-ink p-7 hover:bg-primaryDeep transition group">
+        <div class="w-12 h-12 rounded-2xl bg-primary2/20 text-accent2 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+          <i class="fa-solid fa-handshake-slash text-lg"></i>
+        </div>
+        <h3 class="font-display text-xl font-medium mb-2">Anti-gaming protection</h3>
+        <p class="text-sm text-bg/60 leading-relaxed">Detects fake review loops, suspicious transaction patterns, multi-account abuse — escalated to humans, never auto-punished.</p>
+      </div>
+
+      <div class="bg-ink p-7 hover:bg-primaryDeep transition group">
+        <div class="w-12 h-12 rounded-2xl bg-primary2/20 text-accent2 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+          <i class="fa-solid fa-user-shield text-lg"></i>
+        </div>
+        <h3 class="font-display text-xl font-medium mb-2">Privacy by design</h3>
+        <p class="text-sm text-bg/60 leading-relaxed">Granular visibility controls. Profile, email, location, availability, online status — all configurable by you.</p>
+      </div>
+
+      <div class="bg-ink p-7 hover:bg-primaryDeep transition group">
+        <div class="w-12 h-12 rounded-2xl bg-primary2/20 text-accent2 flex items-center justify-center mb-5 group-hover:scale-110 transition">
+          <i class="fa-solid fa-medal text-lg"></i>
+        </div>
+        <h3 class="font-display text-xl font-medium mb-2">Badge system</h3>
+        <p class="text-sm text-bg/60 leading-relaxed">Earn badges through real milestones — First Session, Top Mentor, Reliable Partner, Verified Skill, Community Builder.</p>
+      </div>
+
+    </div>
+
+    <!-- Verification flow visual -->
+    <div class="mt-16 reveal">
+      <div class="text-center mb-8">
+        <div class="text-xs uppercase tracking-wider text-bg/50 mb-2">Verification ladder</div>
+        <h3 class="font-display text-2xl md:text-3xl font-light">Five levels of trust, earned one step at a time.</h3>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-stretch gap-3">
+        <div class="flex-1 bg-bg/5 border border-bg/10 rounded-2xl p-5 text-center">
+          <div class="text-xs uppercase tracking-wider text-bg/50 mb-2">Level 1</div>
+          <div class="font-semibold mb-1">Self-reported</div>
+          <div class="text-xs text-bg/60">User adds skill</div>
+        </div>
+        <div class="hidden md:flex items-center text-bg/30"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flex-1 bg-bg/5 border border-bg/10 rounded-2xl p-5 text-center">
+          <div class="text-xs uppercase tracking-wider text-bg/50 mb-2">Level 2</div>
+          <div class="font-semibold mb-1">Community-verified</div>
+          <div class="text-xs text-bg/60">Endorsed by peers</div>
+        </div>
+        <div class="hidden md:flex items-center text-bg/30"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flex-1 bg-bg/5 border border-bg/10 rounded-2xl p-5 text-center">
+          <div class="text-xs uppercase tracking-wider text-bg/50 mb-2">Level 3</div>
+          <div class="font-semibold mb-1">Evidence-verified</div>
+          <div class="text-xs text-bg/60">Portfolio reviewed</div>
+        </div>
+        <div class="hidden md:flex items-center text-bg/30"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flex-1 bg-bg/5 border border-bg/10 rounded-2xl p-5 text-center">
+          <div class="text-xs uppercase tracking-wider text-bg/50 mb-2">Level 4</div>
+          <div class="font-semibold mb-1">Assessment-verified</div>
+          <div class="text-xs text-bg/60">Skill demonstrated</div>
+        </div>
+        <div class="hidden md:flex items-center text-bg/30"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="flex-1 bg-accent/10 border border-accent/30 rounded-2xl p-5 text-center">
+          <div class="text-xs uppercase tracking-wider text-accent2 mb-2">Level 5</div>
+          <div class="font-semibold mb-1">Organization-verified</div>
+          <div class="text-xs text-bg/60">Employer/school confirmed</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ COMMUNITY / ORGS ============ -->
+<section id="community" class="py-20 md:py-32 relative">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+
+    <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+      <!-- Visual side -->
+      <div class="lg:col-span-6 order-2 lg:order-1">
+        <div class="grid grid-cols-2 gap-4">
+
+          <!-- Org card 1 -->
+          <div class="bg-card border border-line rounded-2xl p-5 lift">
+            <div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-bg font-display font-semibold text-lg mb-4">U</div>
+            <div class="font-semibold text-ink mb-1">University Collective</div>
+            <div class="text-xs text-muted mb-3">1,240 members · 23 skills</div>
+            <div class="flex -space-x-2">
+              <div class="av-1 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">A</div>
+              <div class="av-2 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">B</div>
+              <div class="av-3 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">C</div>
+              <div class="w-7 h-7 rounded-full border-2 border-card bg-bgSoft text-inkSoft text-xs flex items-center justify-center font-semibold">+9</div>
+            </div>
+          </div>
+
+          <!-- Org card 2 -->
+          <div class="bg-card border border-line rounded-2xl p-5 lift mt-6">
+            <div class="w-12 h-12 rounded-xl bg-accent flex items-center justify-center text-bg font-display font-semibold text-lg mb-4">D</div>
+            <div class="font-semibold text-ink mb-1">Design Guild</div>
+            <div class="text-xs text-muted mb-3">486 members · 14 skills</div>
+            <div class="flex -space-x-2">
+              <div class="av-3 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">D</div>
+              <div class="av-4 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">E</div>
+              <div class="av-5 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">F</div>
+              <div class="w-7 h-7 rounded-full border-2 border-card bg-bgSoft text-inkSoft text-xs flex items-center justify-center font-semibold">+4</div>
+            </div>
+          </div>
+
+          <!-- Org card 3 -->
+          <div class="bg-card border border-line rounded-2xl p-5 lift">
+            <div class="w-12 h-12 rounded-xl bg-plum flex items-center justify-center text-bg font-display font-semibold text-lg mb-4">B</div>
+            <div class="font-semibold text-ink mb-1">Bootcamp Cohort</div>
+            <div class="text-xs text-muted mb-3">82 members · 9 skills</div>
+            <div class="flex -space-x-2">
+              <div class="av-5 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">G</div>
+              <div class="av-1 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">H</div>
+              <div class="av-2 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">I</div>
+              <div class="w-7 h-7 rounded-full border-2 border-card bg-bgSoft text-inkSoft text-xs flex items-center justify-center font-semibold">+2</div>
+            </div>
+          </div>
+
+          <!-- Org card 4 -->
+          <div class="bg-card border border-line rounded-2xl p-5 lift mt-6">
+            <div class="w-12 h-12 rounded-xl bg-gold flex items-center justify-center text-bg font-display font-semibold text-lg mb-4">C</div>
+            <div class="font-semibold text-ink mb-1">Community Builders</div>
+            <div class="text-xs text-muted mb-3">318 members · 31 skills</div>
+            <div class="flex -space-x-2">
+              <div class="av-2 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">J</div>
+              <div class="av-3 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">K</div>
+              <div class="av-4 w-7 h-7 rounded-full border-2 border-card text-bg text-xs flex items-center justify-center font-semibold">L</div>
+              <div class="w-7 h-7 rounded-full border-2 border-card bg-bgSoft text-inkSoft text-xs flex items-center justify-center font-semibold">+6</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Copy side -->
+      <div class="lg:col-span-6 order-1 lg:order-2">
+        <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4 reveal">Organizations & communities</div>
+        <h2 class="font-display text-4xl md:text-5xl font-light leading-[1.05] tracking-tight text-ink reveal">
+          Bring your <span class="italic">whole network</span> along.
+        </h2>
+        <p class="mt-6 text-lg text-inkSoft leading-relaxed reveal">
+          Universities, companies, bootcamps, and clubs get their own private skill pools. Members can join organizations, discover peers within their community, and host group learning sessions.
+        </p>
+
+        <div class="mt-8 space-y-3 reveal">
+          <div class="flex items-center gap-3 text-ink">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span class="text-sm">Domain verification for organizations</span>
+          </div>
+          <div class="flex items-center gap-3 text-ink">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span class="text-sm">Private or public skill pools</span>
+          </div>
+          <div class="flex items-center gap-3 text-ink">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span class="text-sm">Group sessions with credit splitting</span>
+          </div>
+          <div class="flex items-center gap-3 text-ink">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span class="text-sm">Org badges and member directories</span>
+          </div>
+          <div class="flex items-center gap-3 text-ink">
+            <i class="fa-solid fa-check text-primary"></i>
+            <span class="text-sm">Community announcements and events</span>
+          </div>
+        </div>
+
+        <a href="#" class="mt-9 inline-flex items-center gap-2 font-semibold text-ink ulink reveal">
+          Create your organization
+          <i class="fa-solid fa-arrow-right text-sm"></i>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES GRID ============ -->
+<section class="py-20 md:py-32 bg-bgSoft/60 border-y border-line">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+
+    <div class="text-center max-w-3xl mx-auto mb-14 md:mb-20">
+      <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4 reveal">Everything included</div>
+      <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] tracking-tight text-ink reveal">
+        A complete platform, <span class="italic">not a feature list.</span>
+      </h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5 stagger">
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+          <i class="fa-solid fa-comments"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Real-time chat</h3>
+        <p class="text-sm text-muted leading-relaxed">WebSocket-powered messaging with typing indicators, read receipts, and file sharing — but only after a match is accepted.</p>
+      </div>
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-4">
+          <i class="fa-solid fa-video"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Video sessions</h3>
+        <p class="text-sm text-muted leading-relaxed">Provider-agnostic video meetings. Daily, LiveKit, Whereby — your choice. Manual links supported as fallback.</p>
+      </div>
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-plum/10 text-plum flex items-center justify-center mb-4">
+          <i class="fa-solid fa-calendar"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Smart scheduling</h3>
+        <p class="text-sm text-muted leading-relaxed">Timezone-aware calendar with availability overlap, ICS export, reminders, and reschedule workflows.</p>
+      </div>
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-gold/10 text-gold flex items-center justify-center mb-4">
+          <i class="fa-solid fa-book-open"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Resource library</h3>
+        <p class="text-sm text-muted leading-relaxed">Share articles, videos, courses, GitHub repos, and templates. Tag by skill. Visibility controls per resource.</p>
+      </div>
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-berry/10 text-berry flex items-center justify-center mb-4">
+          <i class="fa-solid fa-magnifying-glass-chart"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Semantic search</h3>
+        <p class="text-sm text-muted leading-relaxed">"Photoshop" finds Adobe Photoshop, Graphic Design, and Photo Editing. Powered by embeddings plus structured filters.</p>
+      </div>
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-4">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Notifications</h3>
+        <p class="text-sm text-muted leading-relaxed">In-app, email, and push-ready. Granular preferences per category. Never spammy by default.</p>
+      </div>
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-accent/10 text-accent flex items-center justify-center mb-4">
+          <i class="fa-solid fa-people-group"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Group learning</h3>
+        <p class="text-sm text-muted leading-relaxed">Host sessions with multiple learners. Credits split automatically based on configurable rules.</p>
+      </div>
+
+      <div class="bg-card border border-line rounded-2xl p-6 lift">
+        <div class="w-10 h-10 rounded-xl bg-plum/10 text-plum flex items-center justify-center mb-4">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <h3 class="font-semibold text-ink mb-1.5">Analytics dashboard</h3>
+        <p class="text-sm text-muted leading-relaxed">Track activation, retention, session completion, credit circulation, and marketplace balance.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="py-20 md:py-32 relative">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+
+    <div class="text-center max-w-3xl mx-auto mb-14 md:mb-20">
+      <div class="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4 reveal">From the community</div>
+      <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] tracking-tight text-ink reveal">
+        Real exchanges. <span class="italic">Real growth.</span>
+      </h2>
+      <p class="mt-5 text-sm text-muted reveal">Conceptual testimonials representing the kind of exchanges SkillSwap is designed to enable.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-5 stagger">
+
+      <div class="bg-card border border-line rounded-3xl p-7 lift relative">
+        <i class="fa-solid fa-quote-left text-3xl text-primary/15 absolute top-6 right-6"></i>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="av-1 w-12 h-12 rounded-full flex items-center justify-center text-bg font-semibold">AC</div>
+          <div>
+            <div class="font-semibold text-ink text-sm">Alice Chen</div>
+            <div class="text-xs text-muted">Backend Engineer · Singapore</div>
+          </div>
+        </div>
+        <p class="text-inkSoft leading-relaxed">I taught Python to a designer who taught me Figma in return. We're now collaborating on a side project neither of us could have built alone. SkillSwap made it frictionless.</p>
+        <div class="mt-5 pt-5 border-t border-line flex items-center justify-between text-xs text-muted">
+          <span>32 sessions completed</span>
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star star-fill"></i>
+            <span class="font-semibold text-ink">4.9</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-card border border-line rounded-3xl p-7 lift relative">
+        <i class="fa-solid fa-quote-left text-3xl text-accent/15 absolute top-6 right-6"></i>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="av-2 w-12 h-12 rounded-full flex items-center justify-center text-bg font-semibold">BO</div>
+          <div>
+            <div class="font-semibold text-ink text-sm">Bob Okafor</div>
+            <div class="text-xs text-muted">Product Designer · Lagos</div>
+          </div>
+        </div>
+        <p class="text-inkSoft leading-relaxed">As a self-taught designer, I never thought I'd learn proper engineering practices. Three months in, I've shipped a full-stack prototype and earned enough credits to learn photography too.</p>
+        <div class="mt-5 pt-5 border-t border-line flex items-center justify-between text-xs text-muted">
+          <span>18 sessions completed</span>
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star star-fill"></i>
+            <span class="font-semibold text-ink">4.8</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-card border border-line rounded-3xl p-7 lift relative">
+        <i class="fa-solid fa-quote-left text-3xl text-plum/15 absolute top-6 right-6"></i>
+        <div class="flex items-center gap-3 mb-5">
+          <div class="av-3 w-12 h-12 rounded-full flex items-center justify-center text-bg font-semibold">RT</div>
+          <div>
+            <div class="font-semibold text-ink text-sm">Rina Tanaka</div>
+            <div class="text-xs text-muted">ML Engineer · Tokyo</div>
+          </div>
+        </div>
+        <p class="text-inkSoft leading-relaxed">The verification system means I actually trust the people I'm learning from. The credit model means I don't have to feel guilty about asking for help — I've earned it.</p>
+        <div class="mt-5 pt-5 border-t border-line flex items-center justify-between text-xs text-muted">
+          <span>24 sessions completed</span>
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star star-fill"></i>
+            <span class="font-semibold text-ink">5.0</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="py-20 md:py-32 relative overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+    <div class="relative bg-gradient-to-br from-primary via-primary to-primaryDeep rounded-[2.5rem] p-10 md:p-16 lg:p-20 overflow-hidden">
+
+      <!-- Decorative shapes -->
+      <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-accent/20 blur-3xl"></div>
+      <div class="absolute -bottom-20 -left-20 w-80 h-80 rounded-full bg-accent2/20 blur-3xl"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.04]" style="background-image: radial-gradient(circle, #fff 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+      <div class="relative text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 bg-bg/10 backdrop-blur border border-bg/20 rounded-full px-4 py-1.5 mb-7">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent2"></span>
+          <span class="text-xs font-medium text-bg/90 uppercase tracking-wider">Join the network</span>
+        </div>
+
+        <h2 class="font-display text-4xl md:text-6xl lg:text-7xl font-light leading-[1.0] tracking-tight text-bg">
+          Grow <span class="italic text-accent2">together.</span>
+        </h2>
+
+        <p class="mt-6 text-lg md:text-xl text-bg/80 leading-relaxed max-w-xl mx-auto">
+          Build your skill profile today. Get matched within minutes. Your first session could be this week.
+        </p>
+
+        <div class="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="#" class="bg-bg text-ink px-7 py-4 rounded-full font-semibold flex items-center justify-center gap-2.5 hover:bg-accent2 hover:text-ink transition-all duration-300 hover:shadow-2xl">
+            <i class="fa-solid fa-compass"></i>
+            Find a skill to learn
+            <i class="fa-solid fa-arrow-right text-sm"></i>
+          </a>
+          <a href="#" class="border border-bg/30 text-bg px-7 py-4 rounded-full font-semibold flex items-center justify-center gap-2.5 hover:bg-bg/10 transition">
+            <i class="fa-solid fa-share-nodes"></i>
+            Teach what you know
+          </a>
+        </div>
+
+        <div class="mt-10 flex flex-wrap justify-center items-center gap-x-8 gap-y-3 text-xs text-bg/60">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-accent2"></i>
+            Free to join
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-accent2"></i>
+            No money required
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-accent2"></i>
+            Welcome bonus: 100 credits
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-check text-accent2"></i>
+            Cancel anytime
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-bg pt-20 pb-10">
+  <div class="max-w-7xl mx-auto px-5 md:px-8">
+
+    <div class="grid md:grid-cols-12 gap-10 mb-14">
+
+      <div class="md:col-span-4">
+        <a href="#" class="flex items-center gap-2.5 mb-5">
+          <div class="relative w-9 h-9 rounded-xl bg-bg flex items-center justify-center overflow-hidden">
+            <div class="absolute w-4 h-4 rounded-full bg-accent -translate-x-1 -translate-y-1"></div>
+            <div class="absolute w-4 h-4 rounded-full bg-primary2 translate-x-1.5 translate-y-1.5"></div>
+            <div class="relative w-2.5 h-2.5 rounded-full bg-ink"></div>
+          </div>
+          <span class="font-display text-xl font-semibold tracking-tight">SkillSwap</span>
+        </a>
+        <p class="text-sm text-bg/60 leading-relaxed max-w-xs mb-6">Learn what you need. Teach what you know. Grow together.</p>
+
+        <div class="flex gap-3">
+          <a href="#" class="w-9 h-9 rounded-lg bg-bg/5 hover:bg-bg/10 flex items-center justify-center transition" aria-label="Twitter">
+            <i class="fa-brands fa-x-twitter text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-lg bg-bg/5 hover:bg-bg/10 flex items-center justify-center transition" aria-label="GitHub">
+            <i class="fa-brands fa-github text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-lg bg-bg/5 hover:bg-bg/10 flex items-center justify-center transition" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in text-sm"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-lg bg-bg/5 hover:bg-bg/10 flex items-center justify-center transition" aria-label="Discord">
+            <i class="fa-brands fa-discord text-sm"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="md:col-span-2">
+        <div class="text-xs uppercase tracking-wider text-bg/40 mb-4 font-semibold">Product</div>
+        <ul class="space-y-3 text-sm text-bg/70">
+          <li><a href="#how" class="hover:text-bg transition ulink">How it works</a></li>
+          <li><a href="#discover" class="hover:text-bg transition ulink">Discover</a></li>
+          <li><a href="#credits" class="hover:text-bg transition ulink">Credits</a></li>
+          <li><a href="#trust" class="hover:text-bg transition ulink">Trust & safety</a></li>
+          <li><a href="#community" class="hover:text-bg transition ulink">Organizations</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-2">
+        <div class="text-xs uppercase tracking-wider text-bg/40 mb-4 font-semibold">Community</div>
+        <ul class="space-y-3 text-sm text-bg/70">
+          <li><a href="#" class="hover:text-bg transition ulink">Browse skills</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Browse teachers</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Browse learners</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Resources</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Group sessions</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-2">
+        <div class="text-xs uppercase tracking-wider text-bg/40 mb-4 font-semibold">Company</div>
+        <ul class="space-y-3 text-sm text-bg/70">
+          <li><a href="#" class="hover:text-bg transition ulink">About</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Blog</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Careers</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Press</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-2">
+        <div class="text-xs uppercase tracking-wider text-bg/40 mb-4 font-semibold">Legal</div>
+        <ul class="space-y-3 text-sm text-bg/70">
+          <li><a href="#" class="hover:text-bg transition ulink">Privacy</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Terms</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Community guidelines</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Cookie policy</a></li>
+          <li><a href="#" class="hover:text-bg transition ulink">Safety</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="dotted-x bg-bg/10 my-8"></div>
+
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-bg/50">
+      <div>© 2024 SkillSwap. A peer-to-peer learning community.</div>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-primary2 animate-pulse"></span>
+        All systems operational
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu
+  const mobileToggle = document.getElementById('mobileToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+  mobileToggle?.addEventListener('click', () => {
+    mobileMenu.classList.toggle('open');
+    const icon = mobileToggle.querySelector('i');
+    icon.className = mobileMenu.classList.contains('open') ? 'fa-solid fa-xmark text-ink' : 'fa-solid fa-bars text-ink';
+  });
+  // Close mobile menu on link click
+  mobileMenu?.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      mobileToggle.querySelector('i').className = 'fa-solid fa-bars text-ink';
+    });
+  });
+
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal, .stagger');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+  revealEls.forEach(el => io.observe(el));
+
+  // Animated counters
+  const counters = document.querySelectorAll('[data-count]');
+  const counterIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const el = e.target;
+        const target = parseInt(el.dataset.count, 10);
+        const duration = 1800;
+        const start = performance.now();
+        const startVal = 0;
+        function tick(now) {
+          const t = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const val = Math.floor(startVal + (target - startVal) * eased);
+          el.textContent = val.toLocaleString();
+          if (t < 1) requestAnimationFrame(tick);
+          else el.textContent = target.toLocaleString() + (target === 98 ? '' : (target >= 1000 ? '+' : ''));
+        }
+        requestAnimationFrame(tick);
+        counterIO.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+  counters.forEach(c => counterIO.observe(c));
+
+  // Card tilt on hover (subtle)
+  document.querySelectorAll('.tilt').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const rx = ((y - cy) / cy) * -3;
+      const ry = ((x - cx) / cx) * 3;
+      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+    });
+  });
+
+  // Nav shadow on scroll
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      nav.classList.add('shadow-sm');
+    } else {
+      nav.classList.remove('shadow-sm');
+    }
+  });
+
+  // Parallax hero shapes (mouse move)
+  const heroMesh = document.querySelector('.hero-mesh');
+  heroMesh?.addEventListener('mousemove', (e) => {
+    const rect = heroMesh.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    heroMesh.style.setProperty('--mx', x);
+    heroMesh.style.setProperty('--my', y);
+    const orbs = heroMesh.querySelectorAll('.blur-3xl');
+    orbs.forEach((orb, i) => {
+      const factor = (i + 1) * 12;
+      orb.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+    });
+  });
+</script>
+
+</body>
+</html>
