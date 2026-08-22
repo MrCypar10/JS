@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+       let account = {
+        name : null,
+        accountId : null,
+        balance : null,
+        setAccount : function(id, name, balance){
+            account.name = name,
+            acoount.id = id;
+            account.balance =balance;
+        },
+        deposit : function (amount){
+            if(amount <= 0){
+                document.write(`Invalid Number.`);
+                return;
+            }
+            account.balance += amount;
+            document.write(`<br> Rs. ${amount} Amount Deposited! <br>`);
+        },
+        withdraw : function (amount){
+            if(account.balance<amount){
+                document.write(`<br>Insufficient Balance!!<br>`);
+                return;
+            }
+            account.balance -= amount;
+            Document.write(`<br> Rs. ${amount} Amount Withdrawn !! <br>`);
+        },
+        toString:function(){
+            return `AccountId : ${account.accountId},
+            Name : ${acount.name},
+            Balance : ${account.balance}`
+        },
+    };
+    account.setAccount(101, "Manish" ,78000);
+    document.write("Account Details :<br>");
+    document.write(account);
+    account.deposit(25000);
+    account.withdraw(77000);
+    document.write(`Account details : <br>`);
+    document.write(account);
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
