@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        var a = 10;
+        function show() {
+            var a = 20;
+            document.write(`a is ${a}`);
+            document.write(`<br> globally is ${window.a}`);
+            document.write(`<br> globally is ${this.a}`);
+
+
+        }
+        // here this is called in a fnc and it refers to global variable.
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
