@@ -1,0 +1,1 @@
+in java,  like we can pass a variable and an array as args to a fnc, similarly we also can  pass a fnc an args to another fnc & when we do this the func getting pass will be called as CALLBACK and the fnc which is accepting the callback will be called as HIGH ORDER fnc.
