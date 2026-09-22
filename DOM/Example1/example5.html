@@ -4,7 +4,11 @@
 		<script>
 			function show() {
 				// Write code to access all <li> tag of <ul> with id "nav2"
-				
+				let ul = document.getElementById("nav2");
+				let allLi = ul.getElementsByTagName("li");
+				for(let x of allLi){
+					console.log(x);
+				}
 			}
 		</script>
 	</head>
