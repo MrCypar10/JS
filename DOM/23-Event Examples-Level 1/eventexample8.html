@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Assignment</title>
+    <script>
+      function check(anchor) {
+        let webisteName = prompt("enter google or facebook");
+        if (webisteName === "google") {
+          anchor.setAttribute("href", "http://www.google.com");
+          return true;
+        } else if (webisteName === "instagram") {
+          anchor.setAttribute("href", "http://www.instagram.com");
+          return true;
+        } else {
+          return false;
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <a href="#" onclick="return check(this);">Click me</a>
+  </body>
+</html>

@@ -4,10 +4,19 @@
 		<script>
 			function operate() {
 				// select all Courses and display them
-				let list = document.querySelectorAll("ul");
-					let li = list.querySelectorAll("li");
-					console.log(li);
+				let course = document.getElementByClass(".highlight");
+				let c1 = course.getElementsByTagName("li");
+					for(let x of c1 ){
+						console.log(x);
+					}
+					
 				// select all h3 and display them
+
+				let head = document.getElementsByClassName(".hightlight");
+				let allH3 = head.getElemntsByTagName("h3");
+				for (let x of allH3){
+					console.log(x);
+				}
 			}
 		</script>
 	</head>
