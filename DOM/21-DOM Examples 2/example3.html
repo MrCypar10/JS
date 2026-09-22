@@ -4,7 +4,10 @@
 		<script>
 			function operate() {
 				// Write the code to convert text of all course names to BOLD
-				
+				let bld = document.querySelectorAll("li");
+				bld.forEach((bld)=>{
+					bld.innerHTML="<b>"+bld.innerHTML+"</b>";
+				})
 			}
 		</script>
 	</head>
