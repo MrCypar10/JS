@@ -4,19 +4,21 @@
 		<script>
 			function operate() {
 				// select all Courses and display them
-				let course = document.getElementByClass(".highlight");
-				let c1 = course.getElementsByTagName("li");
-					for(let x of c1 ){
-						console.log(x);
-					}
+				let course = document.querySelector("ul");
+				let c1 = course.querySelectorAll("li");
+				  c1.forEach((courses)=>{
+					console.log(courses);
+				  });	
+				
 					
 				// select all h3 and display them
 
-				let head = document.getElementsByClassName(".hightlight");
-				let allH3 = head.getElemntsByTagName("h3");
-				for (let x of allH3){
-					console.log(x);
-				}
+				let head = document.querySelectorAll("h3");
+					
+				head.forEach((h3s)=>{
+					console.log(h3s);
+				  })	
+				
 			}
 		</script>
 	</head>

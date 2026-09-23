@@ -1,16 +1,20 @@
 <html>
-	<head>
-		<title>Assignment</title>
-		<script>
-			function changeLogo() {
-				//Change image alternatively
-			}
-		</script>
-	</head>
 
-	<body>
-		<h3>My Pic</h3>
-		<img src="/media/images/eiffel.jpg" /><br />
-		<input type="button" value="Change Logo" onclick="changeLogo()" />
-	</body>
+<head>
+	<title>Assignment</title>
+	<script>
+		function changeLogo() {
+			//Change image alternatively
+			let img = document.querySelector("img");
+			img.setAttribute("src", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbLcKorSUVSM7J7XCc17lD5wPJXzmMT7_tWHPkLhe16A&s=10")
+		}
+	</script>
+</head>
+
+<body>
+	<h3>My Pic</h3>
+	<img src="/media/images/eiffel.jpg" /><br />
+	<input type="button" value="Change Logo" onclick="changeLogo()" />
+</body>
+
 </html>
