@@ -4,7 +4,10 @@
 		<script>
 			function operate() {
 				// Write the code to convert text of all course names to uppercase
-				
+				let allCourses = document.querySelectorAll("li");
+				allCourses.forEach((course)=>{
+					course.innerHTML = course.innerHTML.toUpperCase();
+				})    
 			}
 		</script>
 	</head>
