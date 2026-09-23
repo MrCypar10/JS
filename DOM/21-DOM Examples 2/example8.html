@@ -4,6 +4,12 @@
 		<script>
 			function showLink() {
 				//code to add the link dynamically
+				let getLink = prompt("Enter Website");
+				let a = document.querySelector("a");
+				a.setAttribute("href",getLink);
+				let indexOf = getLink.indexOf(".");
+				let domainName = getLink.substring(indexOf+1);
+				a.innerText = "Visit "+domainName;
 			}
 		</script>
 	</head>
