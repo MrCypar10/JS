@@ -5,6 +5,10 @@
 			function decorate() {
 				//Write code to add a crimson color border
 				//on all elements with class attribute of highlight
+				let high = document.querySelectorAll(".highlight");
+				high.forEach((ele) => {
+					ele.style.border="2px solid crimson";
+				});
 				
 			}
 		</script>
