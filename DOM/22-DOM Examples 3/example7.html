@@ -4,6 +4,11 @@
 		<script>
 			function addPara() {
 				//Add new para at top
+				let div = document.querySelector("div");
+				let p = document.createElement("p");
+				let text = document.createTextNode("I am Para 3");
+				p.appendChild(text);
+				div.insertBefore(p,div.firstElementChild)
 				
 			}
 		</script>
