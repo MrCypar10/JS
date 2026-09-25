@@ -2,8 +2,20 @@
 	<head>
 		<title>Assignment</title>
 		<script>
-			function setTimer() {
+			function showTime() {
 				// Write code to generate digital clock
+				let today = new Date();
+				let time  = today.getHours()+":"+today.getMinutes()+":"+today.getSeconds();
+				let div = document.querySelector("div");
+				div.innerText= time;
+				div.style.fontFamily="serif";
+				div.style.fontWeight="bold";
+				div.style.color= "blueviolet";
+				div.style.backgroundColor="alicewhite";
+
+			}
+			function setTimer(){
+				setInterval(showTime,1000);
 			}
 		</script>
 	</head>
