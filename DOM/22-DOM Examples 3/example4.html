@@ -4,7 +4,12 @@
 		<script>
 			function addPara() {
 				//Generate ordered para
-				
+				let div = document.querySelector("div");
+				let child = div.children;
+				let p = document.createElement("p");
+				let text = document.createTextNode("I am Para "+(child.length+1));
+				p.appendChild(text);
+				div.appendChild(p);
 			}
 		</script>
 	</head>

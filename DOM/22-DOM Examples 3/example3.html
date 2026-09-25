@@ -5,7 +5,11 @@
 		<script>
 			function addPara() {
 				///create a new para and add it in the div
-				
+				let p = document.createElement("p");
+				let text = document.createTextNode("I am Para 3");
+				p.appendChild(text);
+				let div = document.querySelector("div");
+				div.appendChild(p);
 			}
 		</script>
 	</head>
