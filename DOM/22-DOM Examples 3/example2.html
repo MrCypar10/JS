@@ -4,7 +4,12 @@
 		<script>
 			function operate() {
 				// Set the color of all children of div to crimson
-				
+				let div = document.querySelector("div");
+				let child = div.children;
+				for(let  ele of child){
+					ele.style.color = "crimson";
+					
+				}
 			}
 		</script>
 	</head>
