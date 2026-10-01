@@ -3,9 +3,8 @@
     <title>Change Color As Per Radio Clicked</title>
     <script>
       function changeColor(ref) {
-        //Change page color as per the button clicked
-        let txtNode = ref.nextSibling;
-        document.bgColor=txtNode.nodeValue.trim();
+       let str = ref.nextSibling;
+       document.bgColor=str.nodeValue.trim();
       }
     </script>
   </head>
