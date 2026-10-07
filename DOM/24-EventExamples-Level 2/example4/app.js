@@ -1,4 +1,4 @@
-const ul = document.querySelector("ul");
-	ul.addEventListener("click", (e)=> {
+const l = document.querySelector("ul");
+	l.addEventListener("click", (e)=> {
 		e.target.style.color="crimson";
 	})

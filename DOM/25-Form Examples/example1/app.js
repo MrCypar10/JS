@@ -1,7 +1,8 @@
 let myForm = document.loginform;
-let txtUser = myForm.txtusername;
-let txtPassword = myForm.txtpassword;
-let myBtn = myForm.btnlogin;
-myBtn.addEventListener("click", () => {
-  alert(txtUser.value + "," + txtPassword.value);
-});
+let usrTxt = myForm.txtusername;
+let usrpass = myForm.txtpassword;
+let btn = myForm.btnlogin;
+
+  btn.addEventListener("click", () =>{
+    alert(usrTxt.value +","+ usrpass.value);
+})
